@@ -1,0 +1,1 @@
+# Opeco module template
