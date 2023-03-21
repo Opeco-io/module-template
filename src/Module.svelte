@@ -41,11 +41,10 @@
 
   <div class="TimeList">
     {#each module.store.times || [] as time}
-      {#each [moment.duration(time, "seconds")] as t}
-        <p class="Time">
-          {t.hours()}:{t.minutes()}:{t.seconds()}
-        </p>
-      {/each}
+      {@const t = moment.duration(time, "seconds")}
+      <p class="Time">
+        {t.hours()}:{t.minutes()}:{t.seconds()}
+      </p>
     {/each}
   </div>
 </div>
