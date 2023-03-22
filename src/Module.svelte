@@ -1,64 +1,50 @@
 <script>
-  import moment from "moment"
-
   export let module
 
-  let interval
+  const incrementCount = (inc) => (module.state.count += inc)
 
-  $: duration = moment.duration(module.state.timer, "seconds")
-
-  const incrementTimer = (inc) => (module.state.timer += inc)
-  const clearTimes = () => {
-    module.store.times = []
-  }
   const save = () => {
-    if (module.store.times.length > 5) {
-      module.store.times = [...module.store.times.slice(1), module.state.timer]
-    } else {
-      module.store.times = [...(module.store.times || []), module.state.timer]
-    }
+    module.store.count = module.state.count
+  }
+  const reset = () => {
+    module.state.count = 0
+    module.store.count = 0
   }
 
   module.init(() => ({
-    timer: 0,
+    count: 0,
   }))
   module.on("mount", () => {
-    interval = setInterval(() => incrementTimer(1), 1000)
-  })
-  module.on("destroy", () => {
-    clearTimeout(interval)
+    module.state.count = module.store?.count || module.state.count
   })
 </script>
 
-<div class="Timer">
-  <p class="Time has-text-info">
-    {duration.hours()}:{duration.minutes()}:{duration.seconds()}
+<div class="Module">
+  <p class="Message">
+    Module <span class="has-text-primary">{module.name}</span> has been successfully
+    initialized! 🚀
+  </p>
+  <p class="Count">
+    {module.state.count}
   </p>
   <div>
+    <button class="button is-primary" on:click={() => incrementCount(1)}>
+      +1
+    </button>
     <button class="button is-success" on:click={save}> Save </button>
-    <button class="button is-danger" on:click={clearTimes}> Clear </button>
-  </div>
-
-  <div class="TimeList">
-    {#each module.store.times || [] as time}
-      {@const t = moment.duration(time, "seconds")}
-      <p class="Time">
-        {t.hours()}:{t.minutes()}:{t.seconds()}
-      </p>
-    {/each}
+    <button class="button is-danger" on:click={reset}> Reset </button>
   </div>
 </div>
 
 <style>
-  .Timer {
+  .Module {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
     padding: 1rem;
-    border: 1px solid #dedede;
   }
-  .Time {
+  .Count {
     font-size: 2rem;
   }
 </style>
