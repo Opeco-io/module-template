@@ -7,13 +7,13 @@ import postcss from "rollup-plugin-postcss"
 export default {
   input: "src/index.mjs",
   output: {
-    file: "dist/index.mjs",
-    format: "esm",
+    file: "dist/index.cjs",
+    format: "cjs",
     sourcemap: true,
     inlineDynamicImports: true,
   },
   plugins: [
-    nodeResolve({ module: true }),
+    nodeResolve({ module: true, browser: true }),
     svelte({
       preprocess: autoPreprocess(),
       compilerOptions: {
@@ -24,6 +24,10 @@ export default {
       },
     }),
     postcss({ output: "bundle.css" }),
-    commonjs(),
+    commonjs({
+      include: /node_modules/,
+      requireReturnsDefault: "auto",
+    }),
   ],
+  external: [],
 }
